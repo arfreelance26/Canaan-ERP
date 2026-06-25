@@ -10,6 +10,11 @@ A comprehensive Enterprise Resource Planning (ERP) system for **Canaan Global In
 - [Tech Stack](#tech-stack)
 - [System Requirements](#system-requirements)
 - [Installation & Setup](#installation--setup)
+  - [Step 1: Clone Repository](#step-1-clone-the-repository)
+  - [Step 2: Setup MySQL](#step-2-setup-mysql-database)
+  - [Step 2.5: Configure .env](#step-25-configure-environment-variables-env)
+  - [Step 3: Setup Backend](#step-3-setup-backend)
+  - [Step 4: Setup Frontend](#step-4-setup-frontend)
 - [Running the Application](#running-the-application)
 - [Project Structure](#project-structure)
 - [Database Schema](#database-schema)
@@ -120,10 +125,97 @@ docker ps | grep canaan-mysql
 ```
 
 #### Option C: Remote MySQL
-Update the connection string in `frontend/backend/database.py`:
-```python
-DATABASE_URL = "mysql+pymysql://username:password@host:port/canaan"
+For remote MySQL instances, set the DATABASE_URL environment variable in your .env file (see Step 2.5 below).
+
+### Step 2.5: Configure Environment Variables (.env)
+
+**IMPORTANT: Never commit `.env` file to GitHub. Use `.env.example` as a template.**
+
+#### Backend Environment Setup
+
+1. **Navigate to backend directory**
+```bash
+cd frontend/backend
 ```
+
+2. **Copy the example file**
+```bash
+cp .env.example .env
+```
+
+3. **Edit `.env` file** with your actual credentials
+```bash
+# On macOS/Linux
+nano .env
+# or
+vim .env
+
+# On Windows
+notepad .env
+```
+
+4. **Set your MySQL credentials in `.env`**
+```env
+# ============================================================================
+# Canaan ERP - Backend Environment Variables
+# ============================================================================
+
+# Database Configuration (REQUIRED)
+# Format: mysql+pymysql://username:password@host:port/database
+# Default: mysql+pymysql://root:password@localhost/canaan
+DATABASE_URL=mysql+pymysql://root:alan#2005@localhost/canaan
+
+# FastAPI Settings
+DEBUG=False
+API_PORT=8000
+API_HOST=0.0.0.0
+
+# Security (Optional)
+SECRET_KEY=your-secret-key-here
+```
+
+**Example Database URLs:**
+
+```bash
+# Local MySQL (default)
+DATABASE_URL=mysql+pymysql://root:alan#2005@localhost/canaan
+
+# Local MySQL with different port
+DATABASE_URL=mysql+pymysql://root:password@localhost:3307/canaan
+
+# Remote MySQL
+DATABASE_URL=mysql+pymysql://username:password@db.example.com:3306/canaan
+
+# Docker MySQL
+DATABASE_URL=mysql+pymysql://root:password@host.docker.internal:3306/canaan
+```
+
+5. **Verify `.env` is in `.gitignore`**
+```bash
+# Check if .env is ignored
+cat .gitignore | grep "\.env"
+# Should output: .env*
+```
+
+#### Frontend Environment Setup (Optional)
+
+1. **Navigate to frontend directory**
+```bash
+cd ../
+```
+
+2. **Create or edit `.env.local`**
+```bash
+# Backend API URL (if not running on default localhost:8000)
+NEXT_PUBLIC_API_URL=http://localhost:8000
+
+# Optional: Feature flags, feature toggles
+# NEXT_PUBLIC_FEATURE_X=true
+```
+
+**Note:** Frontend `.env.local` is already in `.gitignore`
+
+---
 
 ### Step 3: Setup Backend
 
